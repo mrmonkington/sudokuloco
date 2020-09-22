@@ -1,4 +1,4 @@
-from sudokoloco import solver
+from sudokuloco import solver
 import pytest
 import logging
 

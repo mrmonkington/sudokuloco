@@ -33,10 +33,10 @@ jobs:
 #        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        python -m pytest tests/ --cov=sudokuloco
+        python -m pytest tests/ --cov=sudokuloco --cov-report xml:coverage.xml
     - uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-        file: ./.coverage # optional
+        file: ./coverage.xml # optional
 
 

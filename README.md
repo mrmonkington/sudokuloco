@@ -5,6 +5,8 @@
 
 A sudoko solver!
 
+Solves 9x9 (n=3, v fast!) and 16x16 (n=4, much less fast) puzzles. 
+
 ## Usage
 
 ```

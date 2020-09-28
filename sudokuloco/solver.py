@@ -209,11 +209,33 @@ class Puzzle():
         return len(this_cell)
 
     def find_first_unsolved_cell(self):
+        """Finds the first cell coords that contain a set count > 1
+        """
         for r in range(0, self.size):
             for c in range(0, self.size):
                 f = self.get(c, r)
                 if len(f) > 1:
                     return c,r
+        raise AlgorithmException("Asked to find a unsolved cell in a solved puzzle")
+
+    def find_simplest_unsolved_cell(self):
+        """Finds coords of cell that contain the smallest set n > 1
+        """
+        best_c = 0
+        best_r = 0
+        best_len = IMPOSSIBLE
+        for r in range(0, self.size):
+            for c in range(0, self.size):
+                f = self.get(c, r)
+                if len(f) > 1:
+                    if best_len == IMPOSSIBLE or len(f) < best_len:
+                        best_len = len(f)
+                        best_c = c
+                        best_r = r
+        if best_len > 1:
+            return best_c, best_r
+        raise AlgorithmException("Asked to find a unsolved cell in a solved puzzle")
+
 
 
 def solve(puzzle):
@@ -258,7 +280,7 @@ def solve(puzzle):
         raise AlgorithmException(f"this_run {this_run} is lower than minimum possible of {win_score}")
     else:
         # start searching
-        un_c, un_r = puzzle.find_first_unsolved_cell()
+        un_c, un_r = puzzle.find_simplest_unsolved_cell()
         f = puzzle.get(un_c, un_r)
         for poss in f:
             d(f"Forking {un_c},{un_r},{poss}")

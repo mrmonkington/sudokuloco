@@ -170,6 +170,13 @@ def test_reduce():
     puzzle.reduce_cell(1,0)
     assert puzzle.get(1,0) == set(["3"])
 
+def test_find_cells():
+    chunksize, raw_puzzle = get_easy_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.find_first_unsolved_cell() == (1, 0)
+    assert puzzle.find_simplest_unsolved_cell() == (1, 0)
+
+
 def test_solve():
     chunksize, raw_puzzle = get_valid_incomplete()
     puzzle = solver.Puzzle(chunksize, raw_puzzle)

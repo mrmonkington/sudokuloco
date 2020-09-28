@@ -7,16 +7,18 @@
         col - one chunksize^2 column from top to bottom, 0 indexed
         chunk - the chunksize x chunksize square collection of cells, 0 indexed TL to BR
 
-    algorithm v1:
+    algorithm:
 
-    each cell is a sequence of possible pieces
-    repeat
-        iterate through each cell where len(possibilities) > 1
-            test each possibilities against row, cell and chunk removing any that fail
-            if max(len(possibilities)) == 1
-                return solve
-            else if no changes this pass
-                return unsolvable
+    solve():
+        each cell is a sequence of possible pieces
+        repeat
+            iterate through each cell where len(possibilities) > 1
+                remove certain pieces found in col, row and zone sets
+                if max(len(possibilities)) == 1
+                    return solve
+                else if no changes this pass
+                    find smallest unsolved set
+                        begin search, forking puzzle and recursively called solve
 """
 
 import sys
@@ -24,12 +26,12 @@ from re import split
 import logging
 from math import sqrt
 import copy
+import argparse
 
 IMPOSSIBLE = -1
 
 BLANKS = ('_', '-', '*', '.')
 
-logging.basicConfig(level=logging.DEBUG)
 
 class FormatException(Exception):
     """Error relating to input file format
@@ -348,13 +350,12 @@ def read_puzzle(inp):
             size = len(chunks)
             # sudoku's need to be squares of squares
             # https://en.wikipedia.org/wiki/Glossary_of_Sudoku#Variants_by_size
-            if size not in (4,9):
+            if size not in (4,9,16):
                 # TODO support greater than decimal variants (e.g. [0-9A-Z])
                 raise FormatException("Square size not a square number!")
         else:
             if len(chunks) != size:
                 raise FormatException(f"Row {rowc} doesn't match first row size")
-
 
         # convert pieces to sequences of possibilities
         # BLANKS are initially an empty set (but later we'll expand)
@@ -388,7 +389,15 @@ def run(inp):
     chunksize, raw_puzzle = read_puzzle(inp)
     puzzle = Puzzle(chunksize, raw_puzzle)
     score, puzzle = solve(puzzle)
-    print(format_puzzle(puzzle))
+    if score == pow(chunksize, 4):
+        print(format_puzzle(puzzle))
+    else:
+        print("Could not solve, sorry")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Solve some puzzles.')
+    parser.add_argument('--debug', '-d', help='Enable debugging', action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
     run(sys.stdin)

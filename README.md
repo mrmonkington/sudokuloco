@@ -64,7 +64,7 @@ python -m pytest tests/ --cov=sudokuloco -vv -s
 
 ### TODO
 
- - Speed it up for hard puzzles! The search is extremely naive.
- - Not tested (yet!) with 16x16 puzzles (but blindly coded in a size agnostic way)
+ - ~~Speed it up for hard puzzles! The search is extremely naive.~~
+ - ~~Not tested (yet!) with 16x16 puzzles (but blindly coded in a size agnostic way)~~ - solved a 16x16 'expert' puzzle in 9m (not great? not sure - don't have a benchmark)
  - Add some launch options and read classic puzzle one-liners from http://magictour.free.fr/top95
  - Tidy up for packaging

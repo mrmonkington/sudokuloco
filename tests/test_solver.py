@@ -30,6 +30,11 @@ def get_valid_complete():
     with open('tests/valid_complete_9.txt') as inp:
         return solver.read_puzzle(inp)
 
+def get_easy_incomplete():
+    """Utility to open a valid incomplete puzzle file that has one empty cell"""
+    with open('tests/easy_incomplete_9.txt') as inp:
+        return solver.read_puzzle(inp)
+
 def get_invalid_incomplete():
     """Utility to open an invalid incomplete puzzle file"""
     with open('tests/invalid_incomplete_9.txt') as inp:
@@ -71,54 +76,71 @@ def test_validate_column():
     """
     Does a known valid single incomplete column validate?
     """
-    pass
+    chunksize, raw_puzzle = get_valid_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.validate_col(1) == True
+    chunksize, raw_puzzle = get_valid_complete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.validate_col(1) == True
+    chunksize, raw_puzzle = get_invalid_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.validate_col(1) == False
+
 
 def test_validate_row():
     """
     Does a known valid single incomplete row validate?
     """
-    pass
+    chunksize, raw_puzzle = get_valid_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.validate_row(0) == True
+    chunksize, raw_puzzle = get_valid_complete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.validate_row(0) == True
+    chunksize, raw_puzzle = get_invalid_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.validate_row(0) == False
 
-def test_validate_zone():
+def test_validate_chunk():
     """
-    Does a known valid single incomplete zone validate?
+    Does a known valid single incomplete chunk validate?
     """
     chunksize, raw_puzzle = get_valid_incomplete()
     puzzle = solver.Puzzle(chunksize, raw_puzzle)
-    assert puzzle.validate_zone(0, 0) == True
-    assert puzzle.validate_zone(1, 1) == True
-    assert puzzle.validate_zone(2, 2) == True
+    assert puzzle.validate_chunk(0, 0) == True
+    assert puzzle.validate_chunk(1, 1) == True
+    assert puzzle.validate_chunk(2, 2) == True
     chunksize, raw_puzzle = get_valid_complete()
     puzzle = solver.Puzzle(chunksize, raw_puzzle)
-    assert puzzle.validate_zone(0, 0) == True
-    assert puzzle.validate_zone(1, 1) == True
-    assert puzzle.validate_zone(2, 2) == True
+    assert puzzle.validate_chunk(0, 0) == True
+    assert puzzle.validate_chunk(1, 1) == True
+    assert puzzle.validate_chunk(2, 2) == True
 
-def test_validate_zone_by_cell_index():
+def test_validate_chunk_by_cell_index():
     """
-    Does a known valid single incomplete zone validate?
+    Does a known valid single incomplete chunk validate?
     """
     chunksize, raw_puzzle = get_valid_incomplete()
     puzzle = solver.Puzzle(chunksize, raw_puzzle)
     for ccc in range(0, 9):
-        assert puzzle.validate_zone_for_cell(ccc, ccc) == True
+        assert puzzle.validate_chunk_for_cell(ccc, ccc) == True
     chunksize, raw_puzzle = get_invalid_incomplete()
     puzzle = solver.Puzzle(chunksize, raw_puzzle)
     for ccc in range(0, 3):
-        assert puzzle.validate_zone_for_cell(ccc, ccc) == False
+        assert puzzle.validate_chunk_for_cell(ccc, ccc) == False
     for ccc in range(3, 9):
-        assert puzzle.validate_zone_for_cell(ccc, ccc) == True
+        assert puzzle.validate_chunk_for_cell(ccc, ccc) == True
 
-def test_validate_all_zones():
+def test_validate_all_chunks():
     """
-    Does a known valid puizzle validate all zones?
+    Does a known valid puizzle validate all chunks?
     """
     chunksize, raw_puzzle = get_valid_incomplete()
     puzzle = solver.Puzzle(chunksize, raw_puzzle)
-    assert puzzle.validate_all_zones() == True
+    assert puzzle.validate_all_chunks() == True
     chunksize, raw_puzzle = get_valid_complete()
     puzzle = solver.Puzzle(chunksize, raw_puzzle)
-    assert puzzle.validate_all_zones() == True
+    assert puzzle.validate_all_chunks() == True
 
 def test_print_puzzle():
     chunksize, raw_puzzle = get_valid_complete()
@@ -135,6 +157,31 @@ def test_print_puzzle():
 {3} {4} {5} {2} {8} {6} {1} {7} {9}"""
     print()
     print(op)
+    chunksize, raw_puzzle = get_valid_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    op = solver.format_puzzle(puzzle)
+    print()
+    print(op)
+
+def test_reduce():
+    chunksize, raw_puzzle = get_easy_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    assert puzzle.get(1,0) == set(["1","2","3","4","5","6","7","8","9"])
+    puzzle.reduce_cell(1,0)
+    assert puzzle.get(1,0) == set(["3"])
+
+def test_solve():
+    chunksize, raw_puzzle = get_valid_incomplete()
+    puzzle = solver.Puzzle(chunksize, raw_puzzle)
+    op = solver.format_puzzle(puzzle)
+    print()
+    print(op)
+    score, puzzle = solver.solve(puzzle)
+    op = solver.format_puzzle(puzzle)
+    print()
+    print(op)
+    assert True
+    
 
 
 def test_int_2_piece():

@@ -7,7 +7,7 @@ jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-    - uses: mrmonkington/issue-labeler
+    - uses: mrmonkington/issue-labeler@master
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         configuration-path: .github/labeler.yml
